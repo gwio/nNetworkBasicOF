@@ -10,10 +10,10 @@ void ofApp::setup(){
     topology.push_back(2);
     
     topology.push_back(4);
-    topology.push_back(4);
+    topology.push_back(5);
     topology.push_back(4);
 
-
+    
     topology.push_back(1);
     
     myNet = Net(topology);
@@ -22,7 +22,7 @@ void ofApp::setup(){
     inputVals.clear();
     targetVals.clear();
     ofEnableAlphaBlending();
-    ofDisableAntiAliasing();
+    //ofDisableAntiAliasing();
     
     
      // cout << i << endl;
@@ -63,23 +63,32 @@ void ofApp::update(){
 void ofApp::draw(){
     ofBackground(4, 4, 10);
     ofTranslate(100, 100);
-    ofNoFill();
-    ofSetColor(255, 255, 255);
+    //ofNoFill();
+    ofSetColor(255, 255, 255,100);
     
-    float grid = 100;
+    float gridX = 300;
+    float gridY = 100;
     float dia = 20;
     
     //input
     for (int j = 0; j <= topology.at(0); j++) {
-        ofDrawBitmapString(ofToString(myNet.m_layers[0][j].getOutputVal()), 0, j*grid-20);
-        ofDrawEllipse(0, j*grid, dia, dia);
         
-        ofPushStyle();
-        ofSetColor(55, 55, 55);
         for (int k = 0; k < topology.at(1); k++) {
-            ofDrawLine(0, j*grid, grid, k*grid);
+            float w = myNet.m_layers.at(0).at(j).m_outputWeights.at(k).weight;
+            ofPushStyle();
+            if (w > 0) {
+                ofSetColor(ofColor::fromHsb(0, 255, 255, 100));
+            } else {
+                ofSetColor(ofColor::fromHsb(222, 255, 255, 100));
             }
-        ofPopStyle();
+            ofSetLineWidth(abs(w)*8);
+            ofDrawLine(0, j*gridY, gridX, k*gridY);
+            ofPopStyle();
+            }
+        
+        ofDrawBitmapString(ofToString(myNet.m_layers[0][j].getOutputVal()), 0, j*gridY-20);
+        dia = myNet.m_layers[0][j].getOutputVal() *30+6;
+        ofDrawEllipse(0, j*gridY, dia, dia);
     }
     
 
@@ -88,22 +97,31 @@ void ofApp::draw(){
     
     for (int i = 1; i < topology.size()-1; i++) {
         for (int j = 0; j <= topology.at(i); j++) {
-            ofDrawBitmapString(ofToString(myNet.m_layers[i][j].getOutputVal()), i*grid, j*grid-20);
-            ofDrawEllipse(i*grid, j*grid, dia, dia);
-            ofPushStyle();
-            ofSetColor(55, 55, 55);
+           
             for (int k =0; k < topology.at(i+1);k++){
-                ofDrawLine(i*grid, j*grid, (i+1)*grid, k*grid);
+                ofPushStyle();
+                float w = myNet.m_layers.at(i).at(j).m_outputWeights.at(k).weight;
+                if (w > 0) {
+                    ofSetColor(ofColor::fromHsb(0, 255, 255, 100));
+                } else {
+                    ofSetColor(ofColor::fromHsb(222, 255, 255, 100));
+                }
+                ofSetLineWidth(abs(w)*8);
+                ofDrawLine(i*gridX, j*gridY, (i+1)*gridX, k*gridY);
+                ofPopStyle();
             }
-            ofPopStyle();
+            ofDrawBitmapString(ofToString(myNet.m_layers[i][j].getOutputVal()), i*gridX, j*gridY-20);
+            dia = myNet.m_layers[i][j].getOutputVal()*30+6;
+            ofDrawEllipse(i*gridX, j*gridY, dia, dia);
         }
     }
     
     //output
     
     for (int j = 0; j <= topology.at(topology.size()-1); j++) {
-        ofDrawBitmapString(ofToString(myNet.m_layers[topology.size()-1][j].getOutputVal()), (topology.size()-1)*grid,j*grid-20);
-        ofDrawEllipse((topology.size()-1)*grid, j*grid, dia, dia);
+        ofDrawBitmapString(ofToString(myNet.m_layers[topology.size()-1][j].getOutputVal()), (topology.size()-1)*gridX,j*gridY-20);
+        dia = myNet.m_layers[topology.size()-1][j].getOutputVal()*30+6;
+        ofDrawEllipse((topology.size()-1)*gridX, j*gridY, dia, dia);
     }
     
     
@@ -112,7 +130,7 @@ void ofApp::draw(){
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     
-    for (int i = 0; i < 20000; i++){
+    for (int i = 0; i < 100; i++){
     int a = (int) ofRandom(2);
     int b = (int) ofRandom(2);
     
