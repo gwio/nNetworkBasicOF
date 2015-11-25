@@ -29,7 +29,7 @@ public:
     void getResults(vector<double>&);
     double getRecentAvgError();
     
-private:
+//private:
     //[layerNum][neuronNum]
     vector<Layer> m_layers;
     double m_error;
@@ -49,7 +49,7 @@ public:
     void calcHiddenGradients(Layer&);
     void updateInputWeights(Layer&);
     
-private:
+//private:
     static double eta; //[0.0...1.0] overal net training rate
     static double alpha; //[0.0...n]multiplier of last weight change, momentum
     double transferFunction(double);
