@@ -1,5 +1,5 @@
 ### nNetworkBasicOF
-Neural-Network Basic Openframeworks
+Simple Back-Propagation network in Openframeworks
 
 From this tutorial https://vimeo.com/19569529
 
